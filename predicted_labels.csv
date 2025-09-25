@@ -1,0 +1,13 @@
+record_id,predicted_label
+1,arrhythmia
+2,normal
+3,tachycardia
+4,bradycardia
+5,arrhythmia
+6,normal
+7,arrhythmia
+8,tachycardia
+9,tachycardia
+10,normal
+11,bradycardia
+12,tachycardia
