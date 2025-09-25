@@ -1,4 +1,3 @@
-# ekg_classifier_full_pipeline.py
 import pandas as pd
 import numpy as np
 from collections import Counter
@@ -6,17 +5,13 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import StratifiedKFold
 from sklearn.metrics import classification_report, accuracy_score
 
-# ------------------------
-# Step 1: Load labeled training data
-# ------------------------
-df = pd.read_csv("ekg_data.csv")  # labeled dataset
+# Load Labeled Dataset
+df = pd.read_csv("ekg_data.csv")
 
 if "record_id" not in df.columns:
     raise ValueError("CSV must contain a 'record_id' column to group signals")
 
-# ------------------------
-# Step 2: Feature Extraction (Training Data)
-# ------------------------
+# Feature Extraction
 features = []
 labels = []
 
@@ -29,9 +24,7 @@ for rec_id, group in df.groupby("record_id"):
 X = np.array(features)
 y = np.array(labels)
 
-# ------------------------
-# Step 3: Stratified K-Fold Cross-Validation
-# ------------------------
+# Cross validation setup
 class_counts = Counter(y)
 min_class_samples = min(class_counts.values())
 n_splits = min(5, min_class_samples)
@@ -65,16 +58,12 @@ print("\nOverall Cross-Validation Metrics:")
 print(classification_report(all_y_true, all_y_pred, zero_division=0))
 print("Overall Accuracy:", accuracy_score(all_y_true, all_y_pred))
 
-# ------------------------
-# Step 4: Train Final Model on All Data
-# ------------------------
+# Final trained model
 final_model = RandomForestClassifier(n_estimators=100, random_state=42)
 final_model.fit(X, y)
 
-# ------------------------
-# Step 5: Load New Unlabeled Data and Extract Features
-# ------------------------
-df_new = pd.read_csv("new_ekg_data.csv")  # unlabeled dataset
+# Load and extract features from new unlabeled data
+df_new = pd.read_csv("new_ekg_data.csv")
 features_new = []
 record_ids = []
 
@@ -86,9 +75,7 @@ for rec_id, group in df_new.groupby("record_id"):
 
 X_new = np.array(features_new)
 
-# ------------------------
-# Step 6: Predict Labels for New Data
-# ------------------------
+# Label Prediction
 predicted_labels = final_model.predict(X_new)
 
 results = pd.DataFrame({
